@@ -15,7 +15,7 @@ func InitViper(filename *string) {
 	_viper.SetConfigName(components[0])
 	_viper.SetConfigType(components[1])
 	// 默认在当前项目的config目录下寻找配置
-	_viper.AddConfigPath("./")
+	_viper.AddConfigPath("./config")
 
 	if err := _viper.ReadInConfig(); err != nil {
 		panic(err)

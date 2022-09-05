@@ -3,7 +3,7 @@ package router
 import (
 	"net/http"
 
-	"spotify-server/app/spotify"
+	"spotify-server/service/spotify"
 
 	"github.com/gin-gonic/gin"
 )
