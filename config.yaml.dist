@@ -1,0 +1,8 @@
+server:
+  port: 8080
+spotify:
+  client_id: YOUR_SPOTIFY_CLIENT_ID
+  secret: YOUR_SPOTIFY_SECRET
+  callback_url_ios: YOUR_IOS_SCHEME://YOUR_CALLBACK_URI
+  callback_url_android: YOUR_ANDROID_SCHEME://YOUR_CALLBACK_URI
+  callback_url_web: YOUR_WEB_CALLBACK_URL
