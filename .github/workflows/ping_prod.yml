@@ -1,4 +1,4 @@
-name: CI > Rollout k8s status
+name: PING > PROD
 
 # Controls when the action will run.
 on:
