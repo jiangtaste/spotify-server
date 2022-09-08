@@ -34,7 +34,7 @@ jobs:
       uses: docker/metadata-action@v4
       with:
         images: |
-          ghcr.io/${{ github.actor }}/$DOCKER_IMAGE
+          ghcr.io/${{ github.actor }}/${{ env.DOCKER_IMAGE }}
 
     # https://github.com/docker/login-action
     - name: Login to GitHub Container Registry
@@ -51,4 +51,5 @@ jobs:
         context: .
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
+        platforms: ${{ env.DOCKER_TARGET_PLATFORM }}
         labels: ${{ steps.meta.outputs.labels }}
