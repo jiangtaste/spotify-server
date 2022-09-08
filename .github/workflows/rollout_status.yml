@@ -27,6 +27,7 @@ jobs:
           # For this method KUBE_CONFIG required.
           # You can find it: cat $HOME/.kube/config | base64
           base64-kube-config: ${{ secrets.KUBE_CONFIG }}
-          run: |
+      # cmd
+      - run: |
             kubectl get pods
             kubectl rollout status deployment/$DEPLOYMENT
