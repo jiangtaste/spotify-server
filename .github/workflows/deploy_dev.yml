@@ -93,5 +93,5 @@ jobs:
       run: |
         kubectl set image deploy \
           ${{ github.event.repository.name }}-dev-depl \
-          *=ghcr.io/${{ $env.ACTOR_LOWER }}/${{ env.NAMESPACE }}-${{ github.event.repository.name }}:sha-${{ steps.short-sha.outputs.sha }} \
+          *=ghcr.io/${{ env.ACTOR_LOWER }}/${{ env.NAMESPACE }}-${{ github.event.repository.name }}:sha-${{ steps.short-sha.outputs.sha }} \
           -n ${{ env.NAMESPACE }}
