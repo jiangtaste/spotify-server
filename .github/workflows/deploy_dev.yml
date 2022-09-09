@@ -46,7 +46,7 @@ jobs:
       uses: docker/metadata-action@v4
       with:
         images: |
-          ghcr.io/${{ github.actor }}/${{ env.NAMESPACE }}-${{ github.event.repository.name }}
+          ghcr.io/${{ github.actor.toLowerCase() }}/${{ env.NAMESPACE }}-${{ github.event.repository.name }}
         tags: |
             type=ref,event=branch
             type=sha
@@ -87,5 +87,5 @@ jobs:
       run: |
         kubectl set image deploy \
           ${{ github.event.repository.name }}-dev-depl \
-          *=ghcr.io/${{ github.actor }}/${{ env.NAMESPACE }}-${{ github.event.repository.name }}:sha-${{ steps.short-sha.outputs.sha }} \
+          *=ghcr.io/${{ github.actor.toLowerCase() }}/${{ env.NAMESPACE }}-${{ github.event.repository.name }}:sha-${{ steps.short-sha.outputs.sha }} \
           -n ${{ env.NAMESPACE }}
