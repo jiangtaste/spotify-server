@@ -9,7 +9,8 @@ jobs:
   build:    
     runs-on: ubuntu-latest   
     env:
-      DOCKER_TARGET_PLATFORM: linux/arm64
+      OS: linux
+      ARCH: arm64
       NAMESPACE: mimosa
       ENVIRONMENT: DEV
     steps:
@@ -17,6 +18,20 @@ jobs:
     - name: Checkout 
       uses: actions/checkout@v3
 
+    # https://github.com/actions/setup-go
+    - name: Setup Go
+      uses: actions/setup-go@v3
+      with:
+          check-latest: true
+          cache: true
+
+    - name: Build Go
+      run: |
+        go mod download
+        CGO_ENABLED=0 GOOS=${{ env.OS }} GOARCH=${{ env.ARCH }} \
+          go build -ldflags "-s -w" \
+          -o bin/${{ github.event.repository.name }}-${{ env.OS }}-${{ env.ARCH }}
+    
     # https://github.com/docker/setup-qemu-action
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2

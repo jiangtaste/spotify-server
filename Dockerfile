@@ -1,23 +1,16 @@
-FROM golang:alpine AS builder
-
-WORKDIR /opt
-
-COPY go.mod ./
-COPY go.sum ./
-RUN go mod download
-
-COPY service ./service
-COPY core ./core
-COPY router ./router
-COPY main.go ./
-
-RUN CGO_ENABLED=0 go build -ldflags "-s -w" -o app
-# RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
-
 FROM alpine
+
+# configurate
+ENV OS=linux
+ENV ARCH=arm64
+
+# app name
+ENV APP_NAME=${PWD##*/}-${OS}-${ARCH}
+
+# copy bin
+COPY ./bin/${APP_NAME} /opt/
+
+# setup
 WORKDIR /opt
-
-COPY --from=builder /opt/app /opt/app
 EXPOSE 8080
-
-CMD ["/opt/app"]
+CMD ["/opt/${APP_NAME}"]
