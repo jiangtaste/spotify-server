@@ -82,6 +82,7 @@ jobs:
       uses: benjlevesque/short-sha@v1.2
       id: short-sha
 
+  
     # Update k8s deployment image
     - name: Deploy
       run: |
