@@ -82,16 +82,11 @@ jobs:
       uses: benjlevesque/short-sha@v1.2
       id: short-sha
 
-    # 修正设置image时找不到image的问题
-    # ${{ github.actor }} 可能大些，但registry name全小写
-    - name: Prepare registry name
-      run: |
-        echo ACTOR_LOWER=$(echo ${{ github.actor }} tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
-
+  
     # Update k8s deployment image
     - name: Deploy
       run: |
         kubectl set image deploy \
           ${{ github.event.repository.name }}-dev-depl \
-          *=ghcr.io/${{ env.ACTOR_LOWER }}/${{ env.NAMESPACE }}-${{ github.event.repository.name }}:sha-${{ steps.short-sha.outputs.sha }} \
+          *=ghcr.io/${{ github.actor }}/${{ env.NAMESPACE }}-${{ github.event.repository.name }}:sha-${{ steps.short-sha.outputs.sha }} \
           -n ${{ env.NAMESPACE }}
