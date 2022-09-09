@@ -29,7 +29,7 @@ jobs:
         go mod download
         CGO_ENABLED=0 GOOS=${{ env.OS }} GOARCH=${{ env.ARCH }} \
           go build -ldflags "-s -w" \
-          -o bin/app-${{ env.OS }}-${{ env.ARCH }}
+          -o bin/app
     
     # https://github.com/docker/setup-qemu-action
     - name: Set up QEMU

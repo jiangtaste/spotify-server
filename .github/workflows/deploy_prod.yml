@@ -15,6 +15,20 @@ jobs:
     - name: Checkout 
       uses: actions/checkout@v3
 
+    # https://github.com/actions/setup-go
+    - name: Setup Go
+      uses: actions/setup-go@v3
+      with:
+          check-latest: true
+          cache: true
+
+    - name: Build Go
+      run: |
+        go mod download
+        CGO_ENABLED=0 GOOS=${{ env.OS }} GOARCH=${{ env.ARCH }} \
+          go build -ldflags "-s -w" \
+          -o bin/app
+    
     # https://github.com/docker/setup-qemu-action
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
