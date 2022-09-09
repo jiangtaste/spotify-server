@@ -1,4 +1,4 @@
-name: Docker > DEV
+name: Deploy > DEV
 
 on:
   push:
@@ -10,7 +10,8 @@ jobs:
     runs-on: ubuntu-latest   
     env:
       DOCKER_TARGET_PLATFORM: linux/arm64
-      DOCKER_IMAGE: mimosa-spotify
+      NAMESPACE: mimosa
+      ENVIRONMENT: DEV
     steps:
     # checkout 
     - name: Checkout 
@@ -31,7 +32,7 @@ jobs:
       uses: docker/metadata-action@v4
       with:
         images: |
-          ghcr.io/${{ github.actor }}/${{ env.DOCKER_IMAGE }}
+          ghcr.io/${{ github.actor }}/${{ env.NAMESPACE }}-${{ github.event.repository.name }}
         tags: |
             type=ref,event=branch
             type=sha
@@ -53,3 +54,24 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         platforms: ${{ env.DOCKER_TARGET_PLATFORM }}
         labels: ${{ steps.meta.outputs.labels }}
+    
+    # configure kubectl
+    - name: Config kubectl
+      uses: tale/kubectl-action@v1
+      with:
+        # For this method KUBE_CONFIG required.
+        # You can find it: cat $HOME/.kube/config | base64
+        base64-kube-config: ${{ secrets.KUBE_CONFIG }}
+
+    # https://github.com/benjlevesque/short-sha
+    - name: Set short sha
+      uses: benjlevesque/short-sha@v1.2
+      id: short-sha
+
+    # Update k8s deployment image
+    # deployment: $namespace-$repositoryName-depl
+    - name: Deploy
+      run: |
+        kubectl set image deploy \
+          ${{ env.ENVIRONMENT }}-${{ env.NAMESPACE }}-${{ github.event.repository.name }}-depl \
+          *=ghcr.io/${{ github.actor }}/${{ env.NAMESPACE }}-${{ github.event.repository.name }}:sha-${{ steps.short-sha.outputs.sha }}

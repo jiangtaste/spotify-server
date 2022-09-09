@@ -1,4 +1,4 @@
-name: Docker > PROD
+name: Deploy > PROD
 
 on:
   release:
@@ -9,7 +9,8 @@ jobs:
     runs-on: ubuntu-latest   
     env:
       DOCKER_TARGET_PLATFORM: linux/arm64
-      DOCKER_IMAGE: mimosa-spotify
+      NAMESPACE: mimosa
+      ENVIRONMENT: PROD
     steps:
     # checkout 
     - name: Checkout 
@@ -30,8 +31,9 @@ jobs:
       uses: docker/metadata-action@v4
       with:
         images: |
-          ghcr.io/${{ github.actor }}/${{ env.DOCKER_IMAGE }}
+          ghcr.io/${{ github.actor }}/${{ env.NAMESPACE }}-${{ github.event.repository.name }}
         tags: |
+            type=ref,event=branch
             type=semver,pattern={{version}}
 
     # https://github.com/docker/login-action
@@ -51,3 +53,19 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         platforms: ${{ env.DOCKER_TARGET_PLATFORM }}
         labels: ${{ steps.meta.outputs.labels }}
+    
+    # configure kubectl
+    - name: Config kubectl
+      uses: tale/kubectl-action@v1
+      with:
+        # For this method KUBE_CONFIG required.
+        # You can find it: cat $HOME/.kube/config | base64
+        base64-kube-config: ${{ secrets.KUBE_CONFIG }}
+
+    # Update k8s deployment image
+    # deployment: $namespace-$repositoryName-depl
+    - name: Deploy
+      run: |
+        kubectl set image deploy \
+          ${{ env.ENVIRONMENT }}-${{ env.NAMESPACE }}-${{ github.event.repository.name }}-depl \
+          *=ghcr.io/${{ github.actor }}/${{ env.NAMESPACE }}-${{ github.event.repository.name }}:${{ steps.meta.outputs.version }}
