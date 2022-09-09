@@ -1,7 +1,7 @@
 FROM alpine
 
 # copy bin
-COPY ./bin/app /opt/app
+COPY ./bin/app /opt/
 
 # setup
 WORKDIR /opt
