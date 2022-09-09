@@ -66,7 +66,7 @@ jobs:
         context: .
         push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
-        platforms: ${{ env.DOCKER_TARGET_PLATFORM }}
+        platforms: ${{ env.OS }}/${{ env.ARCH }}
         labels: ${{ steps.meta.outputs.labels }}
     
     # configure kubectl
