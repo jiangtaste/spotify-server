@@ -10,7 +10,6 @@ jobs:
     env:
       DOCKER_TARGET_PLATFORM: linux/arm64
       NAMESPACE: mimosa
-      ENVIRONMENT: PROD
     steps:
     # checkout 
     - name: Checkout 
@@ -67,5 +66,6 @@ jobs:
     - name: Deploy
       run: |
         kubectl set image deploy \
-          ${{ env.ENVIRONMENT }}-${{ env.NAMESPACE }}-${{ github.event.repository.name }}-depl \
-          *=ghcr.io/${{ github.actor }}/${{ env.NAMESPACE }}-${{ github.event.repository.name }}:${{ steps.meta.outputs.version }}
+          ${{ github.event.repository.name }}-depl \
+          *=ghcr.io/${{ github.actor }}/${{ env.NAMESPACE }}-${{ github.event.repository.name }}:sha-${{ steps.short-sha.outputs.version }} \
+          -n ${{ env.NAMESPACE }}

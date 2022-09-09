@@ -12,7 +12,6 @@ jobs:
       OS: linux
       ARCH: arm64
       NAMESPACE: mimosa
-      ENVIRONMENT: DEV
     steps:
     # checkout 
     - name: Checkout 
@@ -84,9 +83,9 @@ jobs:
       id: short-sha
 
     # Update k8s deployment image
-    # deployment: $namespace-$repositoryName-depl
     - name: Deploy
       run: |
         kubectl set image deploy \
-          ${{ env.ENVIRONMENT }}-${{ env.NAMESPACE }}-${{ github.event.repository.name }}-depl \
-          *=ghcr.io/${{ github.actor }}/${{ env.NAMESPACE }}-${{ github.event.repository.name }}:sha-${{ steps.short-sha.outputs.sha }}
+          ${{ github.event.repository.name }}-dev-depl \
+          *=ghcr.io/${{ github.actor }}/${{ env.NAMESPACE }}-${{ github.event.repository.name }}:sha-${{ steps.short-sha.outputs.sha }} \
+          -n ${{ env.NAMESPACE }}
