@@ -5,7 +5,7 @@ ENV OS=linux
 ENV ARCH=arm64
 
 # app name
-ENV APP_NAME=${PWD##*/}-${OS}-${ARCH}
+ENV APP_NAME=app-${OS}-${ARCH}
 
 # copy bin
 COPY ./bin/${APP_NAME} /opt/
